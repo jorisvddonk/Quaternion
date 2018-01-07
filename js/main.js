@@ -323,7 +323,7 @@ AFRAME.registerComponent('descent-controls', {
     if (gamepad !== undefined) {
       //Rotation:
       var nv;
-      if (gamepad.buttons[11] != 1) {
+      if (!gamepad.buttons[11].pressed) {
         //Normal turning
         nv = new THREE.Vector3(
           ROTSPEED * gamepad_deadzone(gamepad.axes[3]),
