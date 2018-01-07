@@ -34,6 +34,7 @@ var obj;
 var SHIPSIZE = 1;
 var COLLISION_ENABLED = true;
 var TEMPVEC3 = new THREE.Vector3(); // vector3 reused in various computations
+var TEMPQUAT = new THREE.Quaternion(); // quaternion reused in various computations
 
 document.addEventListener('keydown', function(x) {
   keyboard.state[x.code] = true;
@@ -306,23 +307,25 @@ AFRAME.registerComponent('descent-controls', {
 
     var rotationVector = camera_rotation_speed;
     var rotMult = 1;
-    var tmpQuaternion = new THREE.Quaternion();
-    tmpQuaternion
-      .set(
-        rotationVector.x * rotMult,
-        rotationVector.y * rotMult,
-        rotationVector.z * rotMult,
-        1
-      )
-      .normalize();
-    quat.multiply(tmpQuaternion);
+    TEMPQUAT.set(
+      rotationVector.x * rotMult,
+      rotationVector.y * rotMult,
+      rotationVector.z * rotMult,
+      1
+    ).normalize();
+    quat.multiply(TEMPQUAT);
 
     //Do the actual movement/rotation
     shipElement.setRotationFromQuaternion(quat);
-    shipElement.position = shipElement.position.add(camera_position_speed);
+    var len = camera_position_speed.length();
+    if (len < 0.01) {
+      camera_position_speed.set(0, 0, 0);
+    } else {
+      shipElement.position = shipElement.position.add(camera_position_speed);
+    }
 
     //Check for collisions and push out if needed
-    if (COLLISION_ENABLED) {
+    if (COLLISION_ENABLED && len > 0.01) {
       for (var colobj of colobjects) {
         for (var face of colobj.faces) {
           if (!face._tri) {
