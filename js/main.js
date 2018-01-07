@@ -1,7 +1,6 @@
 var THREE = require('three');
 var jQuery = require('exports-loader?jQuery!../libs/jquery-1.8.1.min.js');
 var THREEx = require('exports-loader?THREEx!../libs/THREEx.KeyboardState.js');
-var noty = require('exports-loader?noty!../libs/noty/jquery.noty.js');
 var mapdata = require('exports-loader?mapdata!../map.js');
 
 var scene, renderer, camera;
