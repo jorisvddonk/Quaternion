@@ -3,6 +3,7 @@ var extras = require('aframe-extras');
 extras.registerAll();
 var THREE = AFRAME.THREE;
 var mapdata = require('exports-loader?mapdata!../map.js');
+var lights = require('exports-loader?lights!../map.js');
 
 var quat, level, ship;
 var camera_rotation_speed = new THREE.Vector3(0, 0, 0);
@@ -24,6 +25,7 @@ var keyboard = {
     return this.state[keyname];
   }
 };
+
 var gamepadFound = false;
 var gamepad;
 var GAMEPAD_DEFAULT_DEADZONE = 0.2;
@@ -43,6 +45,17 @@ document.addEventListener('keyup', function(x) {
 document.addEventListener('keypress', function(x) {
   if (x.code === 'Space') {
     COLLISION_ENABLED = !COLLISION_ENABLED;
+  }
+  if (x.code === 'KeyR') {
+    var newLight = {
+      position: document.getElementById('ship').object3D.position.clone(),
+      intensity: 3,
+      decay: 2,
+      distance: 20
+    };
+    addLight(document.querySelector('a-entity[create-lights]'), newLight);
+    lights.push(newLight);
+    console.log(lights);
   }
 });
 
@@ -169,9 +182,26 @@ function createGeom() {
 
 var FOO = 0;
 
-AFRAME.registerComponent('can-collide', {
+var addLight = function(elem, light) {
+  var el = document.createElement('a-entity');
+  el.setAttribute(
+    'light',
+    `type: point; intensity: ${light.intensity}; distance: ${
+      light.distance
+    }; decay: ${light.decay}`
+  );
+  el.setAttribute(
+    'position',
+    AFRAME.utils.coordinates.stringify(light.position)
+  );
+  elem.appendChild(el);
+};
+
+AFRAME.registerComponent('create-lights', {
   init: function() {
-    //colobjects.push(this.el.object3D);
+    lights.forEach(light => {
+      addLight(this.el, light);
+    });
   }
 });
 
