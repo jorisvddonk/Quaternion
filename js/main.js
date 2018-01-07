@@ -383,7 +383,7 @@ function render() {
   quat.multiply(tmpQuaternion);
 
   //Do the actual movement/rotation
-  camera.quaternion = quat;
+  camera.setRotationFromQuaternion(quat);
   camera.position = camera.position.add(camera_position_speed);
 
   //Check for collisions
