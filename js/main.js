@@ -6,7 +6,7 @@ require('../libs/noty/layouts/bottomRight.js');
 require('../libs/noty/themes/default.js');
 var mapdata = require('exports-loader?mapdata!../map.js');
 
-var scene, renderer, camera, projector;
+var scene, renderer, camera;
 var quat, level, ship;
 var camera_rotation_speed = new THREE.Vector3(0, 0, 0);
 var camera_position_speed = new THREE.Vector3(0, 0, 0);
@@ -149,8 +149,6 @@ function init(shipmodel, levelgeom) {
 	ship.scale.set(50,50,50);
 	scene.add(ship);*/
 
-  projector = new THREE.Projector();
-
   var sph;
 
   /*
@@ -230,7 +228,7 @@ function init(shipmodel, levelgeom) {
 
   // create the particle variables
   var particles = new THREE.Geometry(),
-    pMaterial = new THREE.PointCloudMaterial({
+    pMaterial = new THREE.PointsMaterial({
       color: 0xffffff,
       size: 20
     });
@@ -248,7 +246,7 @@ function init(shipmodel, levelgeom) {
   }
 
   // create the particle variables
-  var pMaterial = new THREE.PointCloudMaterial({
+  var pMaterial = new THREE.PointsMaterial({
     color: 0xffffff,
     size: 20,
     map: THREE.ImageUtils.loadTexture('img/particle.png'),
@@ -257,7 +255,7 @@ function init(shipmodel, levelgeom) {
   });
 
   // create the particle system
-  var particleSystem = new THREE.PointCloud(particles, pMaterial);
+  var particleSystem = new THREE.Points(particles, pMaterial);
 
   // also update the particle system to
   // sort the particles which enables
@@ -309,7 +307,6 @@ function render() {
       MOVSPEED * gamepad_deadzone(gamepad.axes[1])
     );
     temp.applyQuaternion(camera.quaternion);
-    //camera.quaternion.multiplyVector3(temp);
     camera_position_speed = camera_position_speed.add(temp);
   }
 
@@ -444,26 +441,6 @@ function animate() {
   render();
 }
 
-function onDocumentMouseDown(event) {
-  event.preventDefault();
-
-  var vector = new THREE.Vector3(
-    event.clientX / $('#content').width() * 2 - 1,
-    -(event.clientY / $('#content').height()) * 2 + 1,
-    0.5
-  );
-  projector.unprojectVector(vector, camera);
-
-  var raycaster = new THREE.Raycaster();
-  raycaster.set(camera.position, vector.sub(camera.position).normalize());
-  var intersects = raycaster.intersectObjects(colobjects);
-
-  if (intersects.length > 0) {
-    console.log('WOO INTERSECT');
-    console.log(intersects[0]);
-  }
-}
-
 $(function() {
   var jsl = new THREE.JSONLoader();
   jsl.load(
@@ -476,8 +453,6 @@ $(function() {
       });
     }
   );
-
-  document.addEventListener('mousedown', onDocumentMouseDown, false);
 });
 
 THREE.Ray.prototype.intersectFaces = function(faces) {
@@ -579,26 +554,6 @@ THREE.Ray.prototype.intersectFaces = function(faces) {
           face: face,
           faceIndex: f,
           object: object
-        };
-
-        intersects.push(intersect);
-      }
-    } else if (face instanceof THREE.Face4) {
-      a = objMatrix.multiplyVector3(a.copy(face._vertices[face.a]));
-      b = objMatrix.multiplyVector3(b.copy(face._vertices[face.b]));
-      c = objMatrix.multiplyVector3(c.copy(face._vertices[face.c]));
-      d = objMatrix.multiplyVector3(d.copy(face._vertices[face.d]));
-
-      if (
-        pointInFace3(intersectPoint, a, b, d) ||
-        pointInFace3(intersectPoint, b, c, d)
-      ) {
-        intersect = {
-          distance: distance,
-          point: intersectPoint.clone(),
-          face: face,
-          faceIndex: f,
-          vertices: face._vertices
         };
 
         intersects.push(intersect);

@@ -32,6 +32,6 @@
   "dependencies": {
     "exports-loader": "^0.6.4",
     "lodash": "^4.17.4",
-    "three": "^0.69.0"
+    "three": "^0.89.0"
   }
 }
