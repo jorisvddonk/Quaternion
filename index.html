@@ -15,9 +15,12 @@
       <a-entity follow-room controller-actions>
         <a-sphere radius="0.1" position="0 0 0" debug-show-always></a-sphere>
       </a-entity>
-
-      <a-entity>
-        <a-camera look-controls-enabled="false" wasd-controls-enabled="false" descent-controls></a-camera>
+      
+      <a-entity id="ship" descent-controls>
+        <a-entity follow-camera>
+          <a-sphere radius="0.1" color="green" position="0 0 -10" debug-show-always></a-sphere>
+        </a-entity>
+        <a-camera look-controls-enabled="true" user-height="0" wasd-controls-enabled="false"></a-camera>
       </a-entity>
     </a-scene>
   </body>

@@ -308,6 +308,7 @@ THREE.Ray.prototype.intersectFaces = function(faces) {
 AFRAME.registerComponent('descent-controls', {
   tick: function(time, timeDelta) {
     // todo: use timedelta
+    var shipElement = document.getElementById('ship').object3D;
 
     var ROTSPEED = 0.003;
     var MOVSPEED = 0.04;
@@ -346,7 +347,7 @@ AFRAME.registerComponent('descent-controls', {
         0,
         MOVSPEED * gamepad_deadzone(gamepad.axes[1])
       );
-      temp.applyQuaternion(this.el.object3D.quaternion);
+      temp.applyQuaternion(shipElement.quaternion);
       camera_position_speed = camera_position_speed.add(temp);
     }
 
@@ -377,22 +378,22 @@ AFRAME.registerComponent('descent-controls', {
 
     if (keyboard.pressed('KeyW')) {
       var temp = new THREE.Vector3(0, 0, -MOVSPEED);
-      temp.applyQuaternion(this.el.object3D.quaternion);
+      temp.applyQuaternion(shipElement.quaternion);
       camera_position_speed = camera_position_speed.add(temp);
     }
     if (keyboard.pressed('KeyS')) {
       var temp = new THREE.Vector3(0, 0, MOVSPEED);
-      temp.applyQuaternion(this.el.object3D.quaternion);
+      temp.applyQuaternion(shipElement.quaternion);
       camera_position_speed = camera_position_speed.add(temp);
     }
     if (keyboard.pressed('KeyA')) {
       var temp = new THREE.Vector3(-MOVSPEED, 0, 0);
-      temp.applyQuaternion(this.el.object3D.quaternion);
+      temp.applyQuaternion(shipElement.quaternion);
       camera_position_speed = camera_position_speed.add(temp);
     }
     if (keyboard.pressed('KeyD')) {
       var temp = new THREE.Vector3(MOVSPEED, 0, 0);
-      temp.applyQuaternion(this.el.object3D.quaternion);
+      temp.applyQuaternion(shipElement.quaternion);
       camera_position_speed = camera_position_speed.add(temp);
     }
 
@@ -414,10 +415,8 @@ AFRAME.registerComponent('descent-controls', {
     quat.multiply(tmpQuaternion);
 
     //Do the actual movement/rotation
-    this.el.object3D.setRotationFromQuaternion(quat);
-    this.el.object3D.position = this.el.object3D.position.add(
-      camera_position_speed
-    );
+    shipElement.setRotationFromQuaternion(quat);
+    shipElement.position = shipElement.position.add(camera_position_speed);
 
     //Check for collisions
     var maxIntersect = null;
@@ -432,7 +431,7 @@ AFRAME.registerComponent('descent-controls', {
 
         var rvect = new THREE.Vector3(pX, pY, pZ);
 
-        raycaster.set(this.el.object3D.position, rvect.normalize());
+        raycaster.set(shipElement.position, rvect.normalize());
         var intersects = raycaster.intersectObjects(colobjects);
         if (intersects.length > 0) {
           for (var ii = 0; ii < intersects.length; ii++) {
@@ -451,9 +450,9 @@ AFRAME.registerComponent('descent-controls', {
 
     if (maxIntersect != null && maxIntersect.distance > 0) {
       var camvec = new THREE.Vector3();
-      camvec = camvec.subVectors(this.el.object3D.position, maxIntersect.point);
+      camvec = camvec.subVectors(shipElement.position, maxIntersect.point);
       camvec = camvec.multiplyScalar(maxIntersect.distance / SHIPSIZE + 0.1);
-      this.el.object3D.position = this.el.object3D.position.add(camvec);
+      shipElement.position = shipElement.position.add(camvec);
     }
   }
 });
@@ -464,5 +463,18 @@ AFRAME.registerComponent('debug-show-always', {
       depthTest: false
     });
     this.material = this.el.getOrCreateObject3D('mesh').material = mat;
+  }
+});
+
+AFRAME.registerComponent('follow-camera', {
+  init: function() {},
+  tick: function(time) {
+    var camera = this.el.sceneEl.camera.el;
+    if (camera) {
+      // need to add the Y position of the parent element, as that's used to fix the height of the user in the world
+      var pos = camera.getAttribute('position');
+      var posS = { x: pos.x, y: pos.y, z: pos.z };
+      this.el.setAttribute('position', posS);
+    }
   }
 });
