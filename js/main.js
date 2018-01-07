@@ -220,9 +220,11 @@ AFRAME.registerComponent('descent-controls', {
 
     if (navigator.getGamepads()[0] !== undefined) {
       if (gamepadFound == false) {
-        console.log('Gamepad found: ' + navigator.getGamepads()[0].id);
         gamepadFound = true;
         gamepad = navigator.getGamepads()[0];
+        if (gamepad === null) {
+          gamepad = undefined;
+        }
       }
     }
 
