@@ -4,7 +4,6 @@ extras.registerAll();
 var THREE = AFRAME.THREE;
 var mapdata = require('exports-loader?mapdata!../map.js');
 
-var scene, renderer, camera;
 var quat, level, ship;
 var camera_rotation_speed = new THREE.Vector3(0, 0, 0);
 var camera_position_speed = new THREE.Vector3(0, 0, 0);
@@ -71,25 +70,21 @@ function newwall(mapdata, vertarray, geom, x, y, z) {
     // emulate using 2 face3
     var face1 = new THREE.Face3(offset + 0, offset + 1, offset + 2);
     geom.faces.push(face1);
-    face1._vertices = geom.vertices;
     faces.push(face1);
     var face2 = new THREE.Face3(offset + 0, offset + 2, offset + 3);
     geom.faces.push(face2);
-    face2._vertices = geom.vertices;
     faces.push(face2);
   }
   if (vertarray.length == 3) {
     var face = new THREE.Face3(offset + 0, offset + 1, offset + 2);
     geom.faces.push(face);
-    face._vertices = geom.vertices;
     faces.push(face);
   }
 }
 
-AFRAME.registerGeometry('descent-level', {
+AFRAME.registerGeometry('descent-level-geom', {
   init: function() {
     var geom = createGeom();
-    console.log(geom);
     this.geometry = geom;
   }
 });
@@ -153,9 +148,6 @@ function createGeom() {
   quat = new THREE.Quaternion();
   //quat.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), Math.PI / 2 );
 
-  //go go power rangers!
-  //animate();
-
   //Test gamepad support
   if (!!navigator.getGamepads) {
     //TODO: improve this.
@@ -167,143 +159,6 @@ function createGeom() {
   }
   return geom;
 }
-
-function render() {
-  /*var cvect = new THREE.Vector3();
-		cvect = cvect.copy(camera_position_speed);
-		var ray = new THREE.Ray( camera.position, cvect.normalize(), 0, camera_position_speed.length()*100);
-		//var intersects = ray.intersectFaces(faces);
-		var intersects = ray.intersectObjects(colobjects);
-		if (intersects.length > 0) {
-			console.log(intersects.length);
-			for (var i in intersects) {
-				var sph = new THREE.SphereGeometry(50,2,2);
-				var gm = new THREE.Mesh(sph);
-				//console.log(">>>>");
-				//console.log(gm);
-				gm.position = intersects[i].point;
-				scene.add(gm);
-				intersects[i].object.material  = geommat2;
-			}
-		}*/
-
-  //camera_position_speed.set(0,0,0);
-
-  renderer.render(scene, camera);
-}
-
-function animate() {
-  requestAnimationFrame(animate);
-  render();
-}
-
-THREE.Ray.prototype.intersectFaces = function(faces) {
-  var v0 = new THREE.Vector3(),
-    v1 = new THREE.Vector3(),
-    v2 = new THREE.Vector3();
-  var pointInFace3 = function(p, a, b, c) {
-    v0.sub(c, a);
-    v1.sub(b, a);
-    v2.sub(p, a);
-
-    dot00 = v0.dot(v0);
-    dot01 = v0.dot(v1);
-    dot02 = v0.dot(v2);
-    dot11 = v1.dot(v1);
-    dot12 = v1.dot(v2);
-
-    invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
-    u = (dot11 * dot02 - dot01 * dot12) * invDenom;
-    v = (dot00 * dot12 - dot01 * dot02) * invDenom;
-
-    return u >= 0 && v >= 0 && u + v < 1;
-  };
-  var originCopy = new THREE.Vector3();
-  var directionCopy = new THREE.Vector3();
-  var vector = new THREE.Vector3();
-  var normal = new THREE.Vector3();
-  var intersectPoint = new THREE.Vector3();
-  var dot;
-  var intersect,
-    intersects = [];
-  var a = new THREE.Vector3();
-  var b = new THREE.Vector3();
-  var c = new THREE.Vector3();
-  var d = new THREE.Vector3();
-  for (f = 0, fl = faces.length; f < fl; f++) {
-    face = faces[f];
-
-    originCopy.copy(this.origin);
-    directionCopy.copy(this.direction);
-
-    objMatrix = new THREE.Matrix4(
-      1,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      1
-    );
-
-    // determine if ray intersects the plane of the face
-    // note: this works regardless of the direction of the face normal
-
-    vector = objMatrix
-      .multiplyVector3(vector.copy(face.centroid))
-      .sub(originCopy);
-    //normal = object.matrixRotationWorld.multiplyVector3( normal.copy( face.normal ) );
-    normal = normal.copy(face.normal);
-    dot = directionCopy.dot(normal);
-
-    // bail if ray and plane are parallel
-
-    if (Math.abs(dot) < 0.0001) continue;
-
-    // calc distance to plane
-
-    scalar = normal.dot(vector) / dot;
-
-    // if negative distance, then plane is behind ray
-
-    if (scalar < 0) continue;
-
-    intersectPoint.add(originCopy, directionCopy.multiplyScalar(scalar));
-
-    distance = originCopy.distanceTo(intersectPoint);
-
-    if (distance < this.near) continue;
-    if (distance > this.far) continue;
-
-    if (face instanceof THREE.Face3) {
-      a = objMatrix.multiplyVector3(a.copy(face._vertices[face.a]));
-      b = objMatrix.multiplyVector3(b.copy(face._vertices[face.b]));
-      c = objMatrix.multiplyVector3(c.copy(face._vertices[face.c]));
-
-      if (pointInFace3(intersectPoint, a, b, c)) {
-        intersect = {
-          distance: distance,
-          point: intersectPoint.clone(),
-          face: face,
-          faceIndex: f,
-          object: object
-        };
-
-        intersects.push(intersect);
-      }
-    }
-  }
-  return intersects;
-};
 
 AFRAME.registerComponent('descent-controls', {
   tick: function(time, timeDelta) {
