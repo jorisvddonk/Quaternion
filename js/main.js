@@ -337,22 +337,22 @@ function render() {
 
   if (keyboard.pressed('w')) {
     var temp = new THREE.Vector3(0, 0, -MOVSPEED);
-    camera.quaternion.multiplyVector3(temp);
+    temp.applyQuaternion(camera.quaternion);
     camera_position_speed = camera_position_speed.add(temp);
   }
   if (keyboard.pressed('s')) {
     var temp = new THREE.Vector3(0, 0, MOVSPEED);
-    camera.quaternion.multiplyVector3(temp);
+    temp.applyQuaternion(camera.quaternion);
     camera_position_speed = camera_position_speed.add(temp);
   }
   if (keyboard.pressed('a')) {
     var temp = new THREE.Vector3(-MOVSPEED, 0, 0);
-    camera.quaternion.multiplyVector3(temp);
+    temp.applyQuaternion(camera.quaternion);
     camera_position_speed = camera_position_speed.add(temp);
   }
   if (keyboard.pressed('d')) {
     var temp = new THREE.Vector3(MOVSPEED, 0, 0);
-    camera.quaternion.multiplyVector3(temp);
+    temp.applyQuaternion(camera.quaternion);
     camera_position_speed = camera_position_speed.add(temp);
   }
 
