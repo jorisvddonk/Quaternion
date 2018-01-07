@@ -11,7 +11,7 @@
     "webpack": "webpack --config webpack.conf.js",
     "dev": "webpack-dev-server --config webpack.conf.js",
     "precommit": "lint-staged",
-    "prettier": "prettier --write --config .prettierrc src/**/*.js"
+    "prettier": "prettier --write --config .prettierrc js/**/*.js"
   },
   "author": "",
   "license": "ISC",

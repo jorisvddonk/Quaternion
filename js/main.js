@@ -1,13 +1,13 @@
 var THREE = require('exports-loader?THREE!../libs/three.js');
-var jQuery = require("exports-loader?jQuery!../libs/jquery-1.8.1.min.js")
-require("../libs/bootstrap.min.js")
-require("../libs/three.js")
-var THREEx = require("exports-loader?THREEx!../libs/THREEx.KeyboardState.js")
-require("../libs/gui-tools.js")
-var noty = require("exports-loader?noty!../libs/noty/jquery.noty.js")
-require("../libs/noty/layouts/bottomRight.js")
-require("../libs/noty/themes/default.js")
-var mapdata = require("exports-loader?mapdata!../map.js")
+var jQuery = require('exports-loader?jQuery!../libs/jquery-1.8.1.min.js');
+require('../libs/bootstrap.min.js');
+require('../libs/three.js');
+var THREEx = require('exports-loader?THREEx!../libs/THREEx.KeyboardState.js');
+require('../libs/gui-tools.js');
+var noty = require('exports-loader?noty!../libs/noty/jquery.noty.js');
+require('../libs/noty/layouts/bottomRight.js');
+require('../libs/noty/themes/default.js');
+var mapdata = require('exports-loader?mapdata!../map.js');
 
 var scene, renderer, camera, projector;
 var quat, level, ship;
