@@ -1,6 +1,4 @@
 var AFRAME = require('aframe');
-var extras = require('aframe-extras');
-extras.registerAll();
 var THREE = AFRAME.THREE;
 var mapdata = require('exports-loader?mapdata!../map.js');
 var lights = require('exports-loader?lights!../map.js');
@@ -35,6 +33,7 @@ var faces = [];
 var obj;
 var SHIPSIZE = 1;
 var COLLISION_ENABLED = true;
+var TEMPVEC3 = new THREE.Vector3(); // vector3 reused in various computations
 
 document.addEventListener('keydown', function(x) {
   keyboard.state[x.code] = true;
@@ -228,78 +227,77 @@ AFRAME.registerComponent('descent-controls', {
 
     if (gamepad !== undefined) {
       //Rotation:
-      var nv;
       if (!gamepad.buttons[11].pressed) {
         //Normal turning
-        nv = new THREE.Vector3(
+        TEMPVEC3.set(
           ROTSPEED * gamepad_deadzone(gamepad.axes[3]),
           ROTSPEED * -gamepad_deadzone(gamepad.axes[2]),
           0
         );
       } else {
         //Left-right axes roll instead of turn
-        nv = new THREE.Vector3(
+        TEMPVEC3.set(
           ROTSPEED * gamepad_deadzone(gamepad.axes[3]),
           0,
           ROTSPEED * -gamepad_deadzone(gamepad.axes[2])
         );
       }
-      camera_rotation_speed = camera_rotation_speed.add(nv);
+      camera_rotation_speed = camera_rotation_speed.add(TEMPVEC3);
 
       //Position:
-      var temp = new THREE.Vector3(
+      TEMPVEC3.set(
         MOVSPEED * gamepad_deadzone(gamepad.axes[0]),
         0,
         MOVSPEED * gamepad_deadzone(gamepad.axes[1])
       );
-      temp.applyQuaternion(shipElement.quaternion);
-      camera_position_speed = camera_position_speed.add(temp);
+      TEMPVEC3.applyQuaternion(shipElement.quaternion);
+      camera_position_speed = camera_position_speed.add(TEMPVEC3);
     }
 
     if (keyboard.pressed('ArrowDown')) {
-      var nv = new THREE.Vector3(ROTSPEED, 0, 0);
-      camera_rotation_speed = camera_rotation_speed.add(nv);
+      TEMPVEC3.set(ROTSPEED, 0, 0);
+      camera_rotation_speed = camera_rotation_speed.add(TEMPVEC3);
     }
     if (keyboard.pressed('ArrowUp')) {
-      var nv = new THREE.Vector3(-ROTSPEED, 0, 0);
-      camera_rotation_speed = camera_rotation_speed.add(nv);
+      TEMPVEC3.set(-ROTSPEED, 0, 0);
+      camera_rotation_speed = camera_rotation_speed.add(TEMPVEC3);
     }
     if (keyboard.pressed('KeyE')) {
-      var nv = new THREE.Vector3(0, 0, -ROTSPEED);
-      camera_rotation_speed = camera_rotation_speed.add(nv);
+      TEMPVEC3.set(0, 0, -ROTSPEED);
+      camera_rotation_speed = camera_rotation_speed.add(TEMPVEC3);
     }
     if (keyboard.pressed('KeyQ')) {
-      var nv = new THREE.Vector3(0, 0, ROTSPEED);
-      camera_rotation_speed = camera_rotation_speed.add(nv);
+      TEMPVEC3.set(0, 0, ROTSPEED);
+      camera_rotation_speed = camera_rotation_speed.add(TEMPVEC3);
     }
     if (keyboard.pressed('ArrowRight')) {
-      var nv = new THREE.Vector3(0, -ROTSPEED, 0);
-      camera_rotation_speed = camera_rotation_speed.add(nv);
+      TEMPVEC3.set(0, -ROTSPEED, 0);
+      camera_rotation_speed = camera_rotation_speed.add(TEMPVEC3);
     }
     if (keyboard.pressed('ArrowLeft')) {
-      var nv = new THREE.Vector3(0, ROTSPEED, 0);
-      camera_rotation_speed = camera_rotation_speed.add(nv);
+      TEMPVEC3.set(0, ROTSPEED, 0);
+      camera_rotation_speed = camera_rotation_speed.add(TEMPVEC3);
     }
 
     if (keyboard.pressed('KeyW')) {
-      var temp = new THREE.Vector3(0, 0, -MOVSPEED);
-      temp.applyQuaternion(shipElement.quaternion);
-      camera_position_speed = camera_position_speed.add(temp);
+      TEMPVEC3.set(0, 0, -MOVSPEED);
+      TEMPVEC3.applyQuaternion(shipElement.quaternion);
+      camera_position_speed = camera_position_speed.add(TEMPVEC3);
     }
     if (keyboard.pressed('KeyS')) {
-      var temp = new THREE.Vector3(0, 0, MOVSPEED);
-      temp.applyQuaternion(shipElement.quaternion);
-      camera_position_speed = camera_position_speed.add(temp);
+      TEMPVEC3.set(0, 0, MOVSPEED);
+      TEMPVEC3.applyQuaternion(shipElement.quaternion);
+      camera_position_speed = camera_position_speed.add(TEMPVEC3);
     }
     if (keyboard.pressed('KeyA')) {
-      var temp = new THREE.Vector3(-MOVSPEED, 0, 0);
-      temp.applyQuaternion(shipElement.quaternion);
-      camera_position_speed = camera_position_speed.add(temp);
+      TEMPVEC3.set(-MOVSPEED, 0, 0);
+      TEMPVEC3.applyQuaternion(shipElement.quaternion);
+      camera_position_speed = camera_position_speed.add(TEMPVEC3);
     }
     if (keyboard.pressed('KeyD')) {
-      var temp = new THREE.Vector3(MOVSPEED, 0, 0);
-      temp.applyQuaternion(shipElement.quaternion);
-      camera_position_speed = camera_position_speed.add(temp);
+      TEMPVEC3.set(MOVSPEED, 0, 0);
+      TEMPVEC3.applyQuaternion(shipElement.quaternion);
+      camera_position_speed = camera_position_speed.add(TEMPVEC3);
     }
 
     // Apply drag:
@@ -325,7 +323,6 @@ AFRAME.registerComponent('descent-controls', {
 
     //Check for collisions and push out if needed
     if (COLLISION_ENABLED) {
-      var TEMPVEC = new THREE.Vector3();
       for (var colobj of colobjects) {
         for (var face of colobj.faces) {
           if (!face._tri) {
@@ -335,13 +332,13 @@ AFRAME.registerComponent('descent-controls', {
               colobj.vertices[face.c]
             );
           }
-          face._tri.closestPointToPoint(shipElement.position, TEMPVEC);
-          var dist = TEMPVEC.distanceTo(shipElement.position);
+          face._tri.closestPointToPoint(shipElement.position, TEMPVEC3);
+          var dist = TEMPVEC3.distanceTo(shipElement.position);
           if (dist < SHIPSIZE) {
             // need to bump the ship!
-            var norm = face._tri.normal();
-            norm.multiplyScalar(SHIPSIZE - dist);
-            shipElement.position.add(norm);
+            face._tri.normal(TEMPVEC3);
+            TEMPVEC3.multiplyScalar(SHIPSIZE - dist);
+            shipElement.position.add(TEMPVEC3);
           }
           if (FOO < 10) {
             FOO++;
