@@ -2,8 +2,6 @@ var THREE = require('three');
 var jQuery = require('exports-loader?jQuery!../libs/jquery-1.8.1.min.js');
 var THREEx = require('exports-loader?THREEx!../libs/THREEx.KeyboardState.js');
 var noty = require('exports-loader?noty!../libs/noty/jquery.noty.js');
-require('../libs/noty/layouts/bottomRight.js');
-require('../libs/noty/themes/default.js');
 var mapdata = require('exports-loader?mapdata!../map.js');
 
 var scene, renderer, camera;
@@ -28,19 +26,6 @@ function gamepad_deadzone(input, deadzone) {
     return 0;
   }
   return input;
-}
-
-function notify(text, type) {
-  if (type === undefined) {
-    type = 'alert';
-  }
-  noty({
-    text: text,
-    theme: 'default',
-    layout: 'bottomRight',
-    type: type,
-    timeout: 4000
-  });
 }
 
 function newvert(vertobj, x, y, z) {
@@ -218,11 +203,10 @@ function init(shipmodel, levelgeom) {
   //Test gamepad support
   if (!!navigator.getGamepads) {
     //TODO: improve this.
-    //notify("Gamepad support available.", "success");
+    //console.log("Gamepad support available.");
   } else {
-    notify(
-      'Gamepad support unavailable. Please use a recent version of Google Chrome and enable gamepad support in <a href="chrome://flags">the Chrome flags settings window</a>.',
-      'error'
+    console.log(
+      'Gamepad support unavailable. Please use a recent version of Google Chrome and enable gamepad support in <a href="chrome://flags">the Chrome flags settings window</a>.'
     );
   }
 
@@ -265,7 +249,7 @@ function init(shipmodel, levelgeom) {
   // add it to the scene
   scene.add(particleSystem);
 
-  notify('Init successful', 'success');
+  console.log('Init successful');
 }
 
 function render() {
@@ -274,7 +258,7 @@ function render() {
 
   if (navigator.getGamepads()[0] !== undefined) {
     if (gamepadFound == false) {
-      notify('Gamepad found: ' + navigator.getGamepads()[0].id, 'success');
+      console.log('Gamepad found: ' + navigator.getGamepads()[0].id);
       gamepadFound = true;
       gamepad = navigator.getGamepads()[0];
     }
@@ -446,9 +430,7 @@ $(function() {
   jsl.load(
     'data/XWingLow-MediumPolyByPixelOzMultiMaterialColoredVer1-0.js',
     function(model) {
-      notify('Loaded model1');
       jsl.load('data/level.js', function(level) {
-        notify('Loaded model2');
         init(model, level);
       });
     }
