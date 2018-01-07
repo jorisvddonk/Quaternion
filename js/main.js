@@ -31,13 +31,19 @@ var VERTMULT = 20;
 var colobjects = [];
 var faces = [];
 var obj;
-var SHIPSIZE = 50;
+var SHIPSIZE = 1;
+var COLLISION_ENABLED = true;
 
 document.addEventListener('keydown', function(x) {
   keyboard.state[x.code] = true;
 });
 document.addEventListener('keyup', function(x) {
   keyboard.state[x.code] = false;
+});
+document.addEventListener('keypress', function(x) {
+  if (x.code === 'Space') {
+    COLLISION_ENABLED = !COLLISION_ENABLED;
+  }
 });
 
 function gamepad_deadzone(input, deadzone) {
@@ -85,6 +91,7 @@ function newwall(mapdata, vertarray, geom, x, y, z) {
 AFRAME.registerGeometry('descent-level-geom', {
   init: function() {
     var geom = createGeom();
+    colobjects.push(geom);
     this.geometry = geom;
   }
 });
@@ -146,7 +153,7 @@ function createGeom() {
   geom.scale(0.01, 0.01, 0.01);
 
   quat = new THREE.Quaternion();
-  //quat.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), Math.PI / 2 );
+  quat.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI);
 
   //Test gamepad support
   if (!!navigator.getGamepads) {
@@ -160,7 +167,20 @@ function createGeom() {
   return geom;
 }
 
+var FOO = 0;
+
+AFRAME.registerComponent('can-collide', {
+  init: function() {
+    //colobjects.push(this.el.object3D);
+  }
+});
+
 AFRAME.registerComponent('descent-controls', {
+  init: function() {
+    this.raycaster = new THREE.Raycaster();
+    this.raycaster.near = 0;
+    this.raycaster.far = SHIPSIZE;
+  },
   tick: function(time, timeDelta) {
     // todo: use timedelta
     var shipElement = document.getElementById('ship').object3D;
@@ -273,41 +293,31 @@ AFRAME.registerComponent('descent-controls', {
     shipElement.setRotationFromQuaternion(quat);
     shipElement.position = shipElement.position.add(camera_position_speed);
 
-    //Check for collisions
-    var maxIntersect = null;
-    var raycaster = new THREE.Raycaster();
-    raycaster.near = 0;
-    raycaster.far = SHIPSIZE;
-    for (var vi = 0.1; vi < Math.PI; vi += Math.PI * 0.1) {
-      for (var pi = 0; pi < Math.PI * 2; pi += Math.PI * 0.1) {
-        pX = Math.sin(pi) * (Math.sin(vi) * SHIPSIZE);
-        pY = Math.cos(pi) * (Math.sin(vi) * SHIPSIZE);
-        pZ = Math.cos(vi) * SHIPSIZE;
-
-        var rvect = new THREE.Vector3(pX, pY, pZ);
-
-        raycaster.set(shipElement.position, rvect.normalize());
-        var intersects = raycaster.intersectObjects(colobjects);
-        if (intersects.length > 0) {
-          for (var ii = 0; ii < intersects.length; ii++) {
-            if (
-              maxIntersect === null ||
-              maxIntersect.distance > intersects[ii].distance
-            ) {
-              maxIntersect = intersects[ii];
-              console.log(intersects[ii].distance);
-              console.log(intersects[ii]);
-            }
+    //Check for collisions and push out if needed
+    if (COLLISION_ENABLED) {
+      var TEMPVEC = new THREE.Vector3();
+      for (var colobj of colobjects) {
+        for (var face of colobj.faces) {
+          if (!face._tri) {
+            face._tri = new THREE.Triangle(
+              colobj.vertices[face.a],
+              colobj.vertices[face.b],
+              colobj.vertices[face.c]
+            );
+          }
+          face._tri.closestPointToPoint(shipElement.position, TEMPVEC);
+          var dist = TEMPVEC.distanceTo(shipElement.position);
+          if (dist < SHIPSIZE) {
+            // need to bump the ship!
+            var norm = face._tri.normal();
+            norm.multiplyScalar(SHIPSIZE - dist);
+            shipElement.position.add(norm);
+          }
+          if (FOO < 10) {
+            FOO++;
           }
         }
       }
-    }
-
-    if (maxIntersect != null && maxIntersect.distance > 0) {
-      var camvec = new THREE.Vector3();
-      camvec = camvec.subVectors(shipElement.position, maxIntersect.point);
-      camvec = camvec.multiplyScalar(maxIntersect.distance / SHIPSIZE + 0.1);
-      shipElement.position = shipElement.position.add(camvec);
     }
   }
 });

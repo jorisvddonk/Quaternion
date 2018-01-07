@@ -5,9 +5,9 @@
   </head>
   <body>
     <a-scene>
-      <a-sphere radius="0.25" material="shader: flat; color: #f00;" position="0 1 -30"></a-sphere>
-      <a-entity light="type: point; intensity: 3; distance: 50; decay: 2" position="0 1 -30"></a-entity>
-      <a-entity geometry="primitive: descent-level-geom" material="color: white; roughness: 1; metalness: 1;" scale="1 1 1" rotation="0 180 0" position="0 1 -5"></a-entity>
+      <a-sphere radius="0.25" material="shader: flat; color: #f00;" position="0 1 20"></a-sphere>
+      <a-entity light="type: point; intensity: 3; distance: 50; decay: 2" position="0 1 20"></a-entity>
+      <a-entity geometry="primitive: descent-level-geom" material="color: white; roughness: 1; metalness: 1;" can-collide></a-entity>
 
       <a-entity id="collider">
         <a-box width="0.1" height="0.1" depth="0.1" position="0 -1 0" debug-show-always></a-box>
