@@ -1,12 +1,27 @@
 var THREE = require('three');
-var THREEx = require('exports-loader?THREEx!../libs/THREEx.KeyboardState.js');
 var mapdata = require('exports-loader?mapdata!../map.js');
 
 var scene, renderer, camera;
 var quat, level, ship;
 var camera_rotation_speed = new THREE.Vector3(0, 0, 0);
 var camera_position_speed = new THREE.Vector3(0, 0, 0);
-var keyboard = new THREEx.KeyboardState();
+var keyboard = {
+  state: {
+    ArrowDown: false,
+    ArrowUp: false,
+    KeyE: false,
+    KeyQ: false,
+    ArrowRight: false,
+    ArrowLeft: false,
+    KeyW: false,
+    KeyS: false,
+    KeyA: false,
+    KeyD: false
+  },
+  pressed: function(keyname) {
+    return this.state[keyname];
+  }
+};
 var gamepadFound = false;
 var gamepad;
 var GAMEPAD_DEFAULT_DEADZONE = 0.2;
@@ -15,6 +30,13 @@ var colobjects = [];
 var faces = [];
 var obj;
 var SHIPSIZE = 50;
+
+document.addEventListener('keydown', function(x) {
+  keyboard.state[x.code] = true;
+});
+document.addEventListener('keyup', function(x) {
+  keyboard.state[x.code] = false;
+});
 
 function gamepad_deadzone(input, deadzone) {
   if (deadzone === undefined) {
@@ -291,47 +313,47 @@ function render() {
     camera_position_speed = camera_position_speed.add(temp);
   }
 
-  if (keyboard.pressed('down')) {
+  if (keyboard.pressed('ArrowDown')) {
     var nv = new THREE.Vector3(ROTSPEED, 0, 0);
     camera_rotation_speed = camera_rotation_speed.add(nv);
   }
-  if (keyboard.pressed('up')) {
+  if (keyboard.pressed('ArrowUp')) {
     var nv = new THREE.Vector3(-ROTSPEED, 0, 0);
     camera_rotation_speed = camera_rotation_speed.add(nv);
   }
-  if (keyboard.pressed('E')) {
+  if (keyboard.pressed('KeyE')) {
     var nv = new THREE.Vector3(0, 0, -ROTSPEED);
     camera_rotation_speed = camera_rotation_speed.add(nv);
   }
-  if (keyboard.pressed('Q')) {
+  if (keyboard.pressed('KeyQ')) {
     var nv = new THREE.Vector3(0, 0, ROTSPEED);
     camera_rotation_speed = camera_rotation_speed.add(nv);
   }
-  if (keyboard.pressed('right')) {
+  if (keyboard.pressed('ArrowRight')) {
     var nv = new THREE.Vector3(0, -ROTSPEED, 0);
     camera_rotation_speed = camera_rotation_speed.add(nv);
   }
-  if (keyboard.pressed('left')) {
+  if (keyboard.pressed('ArrowLeft')) {
     var nv = new THREE.Vector3(0, ROTSPEED, 0);
     camera_rotation_speed = camera_rotation_speed.add(nv);
   }
 
-  if (keyboard.pressed('w')) {
+  if (keyboard.pressed('KeyW')) {
     var temp = new THREE.Vector3(0, 0, -MOVSPEED);
     temp.applyQuaternion(camera.quaternion);
     camera_position_speed = camera_position_speed.add(temp);
   }
-  if (keyboard.pressed('s')) {
+  if (keyboard.pressed('KeyS')) {
     var temp = new THREE.Vector3(0, 0, MOVSPEED);
     temp.applyQuaternion(camera.quaternion);
     camera_position_speed = camera_position_speed.add(temp);
   }
-  if (keyboard.pressed('a')) {
+  if (keyboard.pressed('KeyA')) {
     var temp = new THREE.Vector3(-MOVSPEED, 0, 0);
     temp.applyQuaternion(camera.quaternion);
     camera_position_speed = camera_position_speed.add(temp);
   }
-  if (keyboard.pressed('d')) {
+  if (keyboard.pressed('KeyD')) {
     var temp = new THREE.Vector3(MOVSPEED, 0, 0);
     temp.applyQuaternion(camera.quaternion);
     camera_position_speed = camera_position_speed.add(temp);
