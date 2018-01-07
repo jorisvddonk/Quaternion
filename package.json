@@ -30,8 +30,9 @@
     "webpack-livereload-plugin": "^1.0.0"
   },
   "dependencies": {
+    "aframe": "^0.7.1",
+    "aframe-extras": "^3.13.1",
     "exports-loader": "^0.6.4",
-    "lodash": "^4.17.4",
-    "three": "^0.89.0"
+    "lodash": "^4.17.4"
   }
 }

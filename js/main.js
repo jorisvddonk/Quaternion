@@ -1,4 +1,7 @@
-var THREE = require('three');
+var AFRAME = require('aframe');
+var extras = require('aframe-extras');
+extras.registerAll();
+var THREE = AFRAME.THREE;
 var mapdata = require('exports-loader?mapdata!../map.js');
 
 var scene, renderer, camera;
@@ -50,23 +53,15 @@ function gamepad_deadzone(input, deadzone) {
 
 function newvert(vertobj, x, y, z) {
   var vert = new THREE.Vector3(
-    (vertobj.X - x) * VERTMULT,
-    (vertobj.Y - y) * VERTMULT,
-    (vertobj.Z - z) * VERTMULT
+    vertobj.X * VERTMULT,
+    vertobj.Y * VERTMULT,
+    vertobj.Z * VERTMULT
   );
   return vert;
 }
 
-var geommat2 = new THREE.MeshLambertMaterial({
-  color: 0x666644,
-  wireframe: true
-});
-var geommat = new THREE.MeshLambertMaterial({
-  color: 0x666644,
-  wireframe: false
-});
 function newwall(mapdata, vertarray, geom, x, y, z) {
-  var geom = new THREE.Geometry();
+  var offset = geom.vertices.length;
 
   for (var i in vertarray) {
     geom.vertices.push(newvert(mapdata.vertices[vertarray[i]], x, y, z));
@@ -74,103 +69,46 @@ function newwall(mapdata, vertarray, geom, x, y, z) {
 
   if (vertarray.length == 4) {
     // emulate using 2 face3
-    var face1 = new THREE.Face3(0, 1, 2);
+    var face1 = new THREE.Face3(offset + 0, offset + 1, offset + 2);
     geom.faces.push(face1);
     face1._vertices = geom.vertices;
     faces.push(face1);
-    var face2 = new THREE.Face3(0, 2, 3);
+    var face2 = new THREE.Face3(offset + 0, offset + 2, offset + 3);
     geom.faces.push(face2);
     face2._vertices = geom.vertices;
     faces.push(face2);
   }
   if (vertarray.length == 3) {
-    var face = new THREE.Face3(0, 1, 2);
+    var face = new THREE.Face3(offset + 0, offset + 1, offset + 2);
     geom.faces.push(face);
     face._vertices = geom.vertices;
     faces.push(face);
   }
-  geom.computeFaceNormals();
-  var geommesh = new THREE.Mesh(geom, geommat);
-  geommesh.position.set(x * VERTMULT, y * VERTMULT, z * VERTMULT);
-  scene.add(geommesh);
-  colobjects.push(geommesh);
-  console.log(geommesh);
 }
 
-function init(shipmodel, levelgeom) {
-  // set the scene size
-  var WIDTH = 800,
-    HEIGHT = 600;
+AFRAME.registerGeometry('descent-level', {
+  init: function() {
+    var geom = createGeom();
+    console.log(geom);
+    this.geometry = geom;
+  }
+});
 
-  // set some camera attributes
-  var VIEW_ANGLE = 45,
-    ASPECT = WIDTH / HEIGHT,
-    NEAR = 0.1,
-    FAR = 10000;
-
-  // get the DOM element to attach to
-  var $container = document.getElementById('content');
-
-  // create a WebGL renderer, camera
-  // and a scene
-  renderer = new THREE.WebGLRenderer();
-  camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-
-  scene = new THREE.Scene();
-
-  // add the camera to the scene
-  scene.add(camera);
-
-  // the camera starts at 0,0,0
-  // so pull it back
-  camera.position.z = 300;
-
-  // start the renderer
-  renderer.setSize(WIDTH, HEIGHT);
-
-  // attach the render-supplied DOM element
-  $container.appendChild(renderer.domElement);
-
-  // create a new mesh with
-  // sphere geometry - we will cover
-  // the sphereMaterial next!
-  /*var sphereMaterial =
-	  new THREE.MeshLambertMaterial(
-	    {
-	      color: 0xCC0000
-	    });*/
-  /*sphere = new THREE.Mesh(
-	  new THREE.CylinderGeometry(20,20,100,10,10,false));*/
-  //var obj = new Physijs.BoxMesh(shipmodel, new THREE.MeshLambertMaterial({color: 0xff0000, wireframe: false}));
-  obj = new THREE.Mesh(
-    new THREE.SphereGeometry(50, 20, 20),
-    new THREE.MeshLambertMaterial({ color: 0xff0000, wireframe: false })
-  );
-  obj.rotation.set(-Math.PI * 0.5, 0, Math.PI * 0.5);
-  scene.add(obj);
-  /*ship = new THREE.Object3D();
-	ship.add(obj);
-	ship.scale.set(50,50,50);
-	scene.add(ship);*/
-
-  var sph;
-
+function createGeom() {
   /*
-0 - left, front, top
-1 - left, front, bottom
-2 - right, front, bottom
-3 - right, front, top
-4 - left, back, top
-5 - left, back, bottom
-6 - right, back, bottom
-7 - right, back, top
-*/
+  0 - left, front, top
+  1 - left, front, bottom
+  2 - right, front, bottom
+  3 - right, front, top
+  4 - left, back, top
+  5 - left, back, bottom
+  6 - right, back, bottom
+  7 - right, back, top
+  */
   //top: 0,3,4,7
+  var geom = new THREE.Geometry();
   for (var i = 0; i < mapdata.length; i++) {
     if (mapdata[i].vertices.length == 8) {
-      var geom = null;
-      //var geom = new THREE.Geometry();
-
       var tx = 0;
       var ty = 0;
       var tz = 0;
@@ -208,16 +146,15 @@ function init(shipmodel, levelgeom) {
       console.log('Ignoring invalid cube #' + i);
     }
   }
-
-  pointLight = new THREE.PointLight(0xffffff);
-  pointLight.position = camera.position.clone();
-  scene.add(pointLight);
+  geom.computeFaceNormals();
+  geom.computeVertexNormals();
+  geom.scale(0.01, 0.01, 0.01);
 
   quat = new THREE.Quaternion();
   //quat.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), Math.PI / 2 );
 
   //go go power rangers!
-  animate();
+  //animate();
 
   //Test gamepad support
   if (!!navigator.getGamepads) {
@@ -228,194 +165,10 @@ function init(shipmodel, levelgeom) {
       'Gamepad support unavailable. Please use a recent version of Google Chrome and enable gamepad support in <a href="chrome://flags">the Chrome flags settings window</a>.'
     );
   }
-
-  // create the particle variables
-  var particles = new THREE.Geometry(),
-    pMaterial = new THREE.PointsMaterial({
-      color: 0xffffff,
-      size: 20
-    });
-
-  var pC = 0;
-  for (var vi = 0.25; vi < Math.PI; vi += Math.PI * 0.25) {
-    for (var pi = 0; pi < Math.PI * 2; pi += Math.PI * 0.25) {
-      pX = Math.sin(pi) * (Math.sin(vi) * 100);
-      pY = Math.cos(pi) * (Math.sin(vi) * 100);
-      pZ = Math.cos(vi) * 100;
-      pC += 1;
-      particle = new THREE.Vector3(pX, pY, pZ);
-      particles.vertices.push(particle);
-    }
-  }
-
-  // create the particle variables
-  var pMaterial = new THREE.PointsMaterial({
-    color: 0xffffff,
-    size: 20,
-    map: THREE.ImageUtils.loadTexture('img/particle.png'),
-    blending: THREE.AdditiveBlending,
-    transparent: true
-  });
-
-  // create the particle system
-  var particleSystem = new THREE.Points(particles, pMaterial);
-
-  // also update the particle system to
-  // sort the particles which enables
-  // the behaviour we want
-  particleSystem.sortParticles = true;
-
-  // add it to the scene
-  scene.add(particleSystem);
-
-  console.log('Init successful');
+  return geom;
 }
 
 function render() {
-  var ROTSPEED = 0.003;
-  var MOVSPEED = 4;
-
-  if (navigator.getGamepads()[0] !== undefined) {
-    if (gamepadFound == false) {
-      console.log('Gamepad found: ' + navigator.getGamepads()[0].id);
-      gamepadFound = true;
-      gamepad = navigator.getGamepads()[0];
-    }
-  }
-
-  if (gamepad !== undefined) {
-    //Rotation:
-    var nv;
-    if (gamepad.buttons[11] != 1) {
-      //Normal turning
-      nv = new THREE.Vector3(
-        ROTSPEED * gamepad_deadzone(gamepad.axes[3]),
-        ROTSPEED * -gamepad_deadzone(gamepad.axes[2]),
-        0
-      );
-    } else {
-      //Left-right axes roll instead of turn
-      nv = new THREE.Vector3(
-        ROTSPEED * gamepad_deadzone(gamepad.axes[3]),
-        0,
-        ROTSPEED * -gamepad_deadzone(gamepad.axes[2])
-      );
-    }
-    camera_rotation_speed = camera_rotation_speed.add(nv);
-
-    //Position:
-    var temp = new THREE.Vector3(
-      MOVSPEED * gamepad_deadzone(gamepad.axes[0]),
-      0,
-      MOVSPEED * gamepad_deadzone(gamepad.axes[1])
-    );
-    temp.applyQuaternion(camera.quaternion);
-    camera_position_speed = camera_position_speed.add(temp);
-  }
-
-  if (keyboard.pressed('ArrowDown')) {
-    var nv = new THREE.Vector3(ROTSPEED, 0, 0);
-    camera_rotation_speed = camera_rotation_speed.add(nv);
-  }
-  if (keyboard.pressed('ArrowUp')) {
-    var nv = new THREE.Vector3(-ROTSPEED, 0, 0);
-    camera_rotation_speed = camera_rotation_speed.add(nv);
-  }
-  if (keyboard.pressed('KeyE')) {
-    var nv = new THREE.Vector3(0, 0, -ROTSPEED);
-    camera_rotation_speed = camera_rotation_speed.add(nv);
-  }
-  if (keyboard.pressed('KeyQ')) {
-    var nv = new THREE.Vector3(0, 0, ROTSPEED);
-    camera_rotation_speed = camera_rotation_speed.add(nv);
-  }
-  if (keyboard.pressed('ArrowRight')) {
-    var nv = new THREE.Vector3(0, -ROTSPEED, 0);
-    camera_rotation_speed = camera_rotation_speed.add(nv);
-  }
-  if (keyboard.pressed('ArrowLeft')) {
-    var nv = new THREE.Vector3(0, ROTSPEED, 0);
-    camera_rotation_speed = camera_rotation_speed.add(nv);
-  }
-
-  if (keyboard.pressed('KeyW')) {
-    var temp = new THREE.Vector3(0, 0, -MOVSPEED);
-    temp.applyQuaternion(camera.quaternion);
-    camera_position_speed = camera_position_speed.add(temp);
-  }
-  if (keyboard.pressed('KeyS')) {
-    var temp = new THREE.Vector3(0, 0, MOVSPEED);
-    temp.applyQuaternion(camera.quaternion);
-    camera_position_speed = camera_position_speed.add(temp);
-  }
-  if (keyboard.pressed('KeyA')) {
-    var temp = new THREE.Vector3(-MOVSPEED, 0, 0);
-    temp.applyQuaternion(camera.quaternion);
-    camera_position_speed = camera_position_speed.add(temp);
-  }
-  if (keyboard.pressed('KeyD')) {
-    var temp = new THREE.Vector3(MOVSPEED, 0, 0);
-    temp.applyQuaternion(camera.quaternion);
-    camera_position_speed = camera_position_speed.add(temp);
-  }
-
-  camera_position_speed.multiplyScalar(0.8);
-  camera_rotation_speed.multiplyScalar(0.9);
-
-  var rotationVector = camera_rotation_speed;
-  var rotMult = 1;
-  var tmpQuaternion = new THREE.Quaternion();
-  tmpQuaternion
-    .set(
-      rotationVector.x * rotMult,
-      rotationVector.y * rotMult,
-      rotationVector.z * rotMult,
-      1
-    )
-    .normalize();
-  quat.multiply(tmpQuaternion);
-
-  //Do the actual movement/rotation
-  camera.setRotationFromQuaternion(quat);
-  camera.position = camera.position.add(camera_position_speed);
-
-  //Check for collisions
-  var maxIntersect = null;
-  var raycaster = new THREE.Raycaster();
-  raycaster.near = 0;
-  raycaster.far = SHIPSIZE;
-  for (var vi = 0.1; vi < Math.PI; vi += Math.PI * 0.1) {
-    for (var pi = 0; pi < Math.PI * 2; pi += Math.PI * 0.1) {
-      pX = Math.sin(pi) * (Math.sin(vi) * SHIPSIZE);
-      pY = Math.cos(pi) * (Math.sin(vi) * SHIPSIZE);
-      pZ = Math.cos(vi) * SHIPSIZE;
-
-      var rvect = new THREE.Vector3(pX, pY, pZ);
-
-      raycaster.set(camera.position, rvect.normalize());
-      var intersects = raycaster.intersectObjects(colobjects);
-      if (intersects.length > 0) {
-        for (var ii = 0; ii < intersects.length; ii++) {
-          if (
-            maxIntersect === null ||
-            maxIntersect.distance > intersects[ii].distance
-          ) {
-            maxIntersect = intersects[ii];
-            console.log(intersects[ii].distance);
-            console.log(intersects[ii]);
-          }
-        }
-      }
-    }
-  }
-
-  if (maxIntersect != null && maxIntersect.distance > 0) {
-    var camvec = new THREE.Vector3();
-    camvec = camvec.subVectors(camera.position, maxIntersect.point);
-    camvec = camvec.multiplyScalar(maxIntersect.distance / SHIPSIZE + 0.1);
-    camera.position = camera.position.add(camvec);
-  }
-
   /*var cvect = new THREE.Vector3();
 		cvect = cvect.copy(camera_position_speed);
 		var ray = new THREE.Ray( camera.position, cvect.normalize(), 0, camera_position_speed.length()*100);
@@ -443,18 +196,6 @@ function animate() {
   requestAnimationFrame(animate);
   render();
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-  var jsl = new THREE.JSONLoader();
-  jsl.load(
-    'data/XWingLow-MediumPolyByPixelOzMultiMaterialColoredVer1-0.js',
-    function(model) {
-      jsl.load('data/level.js', function(level) {
-        init(model, level);
-      });
-    }
-  );
-});
 
 THREE.Ray.prototype.intersectFaces = function(faces) {
   var v0 = new THREE.Vector3(),
@@ -563,3 +304,165 @@ THREE.Ray.prototype.intersectFaces = function(faces) {
   }
   return intersects;
 };
+
+AFRAME.registerComponent('descent-controls', {
+  tick: function(time, timeDelta) {
+    // todo: use timedelta
+
+    var ROTSPEED = 0.003;
+    var MOVSPEED = 0.04;
+
+    if (navigator.getGamepads()[0] !== undefined) {
+      if (gamepadFound == false) {
+        console.log('Gamepad found: ' + navigator.getGamepads()[0].id);
+        gamepadFound = true;
+        gamepad = navigator.getGamepads()[0];
+      }
+    }
+
+    if (gamepad !== undefined) {
+      //Rotation:
+      var nv;
+      if (gamepad.buttons[11] != 1) {
+        //Normal turning
+        nv = new THREE.Vector3(
+          ROTSPEED * gamepad_deadzone(gamepad.axes[3]),
+          ROTSPEED * -gamepad_deadzone(gamepad.axes[2]),
+          0
+        );
+      } else {
+        //Left-right axes roll instead of turn
+        nv = new THREE.Vector3(
+          ROTSPEED * gamepad_deadzone(gamepad.axes[3]),
+          0,
+          ROTSPEED * -gamepad_deadzone(gamepad.axes[2])
+        );
+      }
+      camera_rotation_speed = camera_rotation_speed.add(nv);
+
+      //Position:
+      var temp = new THREE.Vector3(
+        MOVSPEED * gamepad_deadzone(gamepad.axes[0]),
+        0,
+        MOVSPEED * gamepad_deadzone(gamepad.axes[1])
+      );
+      temp.applyQuaternion(this.el.object3D.quaternion);
+      camera_position_speed = camera_position_speed.add(temp);
+    }
+
+    if (keyboard.pressed('ArrowDown')) {
+      var nv = new THREE.Vector3(ROTSPEED, 0, 0);
+      camera_rotation_speed = camera_rotation_speed.add(nv);
+    }
+    if (keyboard.pressed('ArrowUp')) {
+      var nv = new THREE.Vector3(-ROTSPEED, 0, 0);
+      camera_rotation_speed = camera_rotation_speed.add(nv);
+    }
+    if (keyboard.pressed('KeyE')) {
+      var nv = new THREE.Vector3(0, 0, -ROTSPEED);
+      camera_rotation_speed = camera_rotation_speed.add(nv);
+    }
+    if (keyboard.pressed('KeyQ')) {
+      var nv = new THREE.Vector3(0, 0, ROTSPEED);
+      camera_rotation_speed = camera_rotation_speed.add(nv);
+    }
+    if (keyboard.pressed('ArrowRight')) {
+      var nv = new THREE.Vector3(0, -ROTSPEED, 0);
+      camera_rotation_speed = camera_rotation_speed.add(nv);
+    }
+    if (keyboard.pressed('ArrowLeft')) {
+      var nv = new THREE.Vector3(0, ROTSPEED, 0);
+      camera_rotation_speed = camera_rotation_speed.add(nv);
+    }
+
+    if (keyboard.pressed('KeyW')) {
+      var temp = new THREE.Vector3(0, 0, -MOVSPEED);
+      temp.applyQuaternion(this.el.object3D.quaternion);
+      camera_position_speed = camera_position_speed.add(temp);
+    }
+    if (keyboard.pressed('KeyS')) {
+      var temp = new THREE.Vector3(0, 0, MOVSPEED);
+      temp.applyQuaternion(this.el.object3D.quaternion);
+      camera_position_speed = camera_position_speed.add(temp);
+    }
+    if (keyboard.pressed('KeyA')) {
+      var temp = new THREE.Vector3(-MOVSPEED, 0, 0);
+      temp.applyQuaternion(this.el.object3D.quaternion);
+      camera_position_speed = camera_position_speed.add(temp);
+    }
+    if (keyboard.pressed('KeyD')) {
+      var temp = new THREE.Vector3(MOVSPEED, 0, 0);
+      temp.applyQuaternion(this.el.object3D.quaternion);
+      camera_position_speed = camera_position_speed.add(temp);
+    }
+
+    // Apply drag:
+    camera_position_speed.multiplyScalar(0.8);
+    camera_rotation_speed.multiplyScalar(0.9);
+
+    var rotationVector = camera_rotation_speed;
+    var rotMult = 1;
+    var tmpQuaternion = new THREE.Quaternion();
+    tmpQuaternion
+      .set(
+        rotationVector.x * rotMult,
+        rotationVector.y * rotMult,
+        rotationVector.z * rotMult,
+        1
+      )
+      .normalize();
+    quat.multiply(tmpQuaternion);
+
+    //Do the actual movement/rotation
+    this.el.object3D.setRotationFromQuaternion(quat);
+    this.el.object3D.position = this.el.object3D.position.add(
+      camera_position_speed
+    );
+
+    //Check for collisions
+    var maxIntersect = null;
+    var raycaster = new THREE.Raycaster();
+    raycaster.near = 0;
+    raycaster.far = SHIPSIZE;
+    for (var vi = 0.1; vi < Math.PI; vi += Math.PI * 0.1) {
+      for (var pi = 0; pi < Math.PI * 2; pi += Math.PI * 0.1) {
+        pX = Math.sin(pi) * (Math.sin(vi) * SHIPSIZE);
+        pY = Math.cos(pi) * (Math.sin(vi) * SHIPSIZE);
+        pZ = Math.cos(vi) * SHIPSIZE;
+
+        var rvect = new THREE.Vector3(pX, pY, pZ);
+
+        raycaster.set(this.el.object3D.position, rvect.normalize());
+        var intersects = raycaster.intersectObjects(colobjects);
+        if (intersects.length > 0) {
+          for (var ii = 0; ii < intersects.length; ii++) {
+            if (
+              maxIntersect === null ||
+              maxIntersect.distance > intersects[ii].distance
+            ) {
+              maxIntersect = intersects[ii];
+              console.log(intersects[ii].distance);
+              console.log(intersects[ii]);
+            }
+          }
+        }
+      }
+    }
+
+    if (maxIntersect != null && maxIntersect.distance > 0) {
+      var camvec = new THREE.Vector3();
+      camvec = camvec.subVectors(this.el.object3D.position, maxIntersect.point);
+      camvec = camvec.multiplyScalar(maxIntersect.distance / SHIPSIZE + 0.1);
+      this.el.object3D.position = this.el.object3D.position.add(camvec);
+    }
+  }
+});
+
+AFRAME.registerComponent('debug-show-always', {
+  init: function() {
+    var mat = new THREE.MeshBasicMaterial({
+      depthTest: false
+    });
+    this.material = this.el.getOrCreateObject3D('mesh').material = mat;
+  }
+});
