@@ -1,0 +1,515 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"camera",
+				"camera_position_speed"
+			],
+			[
+				"camera_",
+				"camera_position_speed"
+			],
+			[
+				"col",
+				"colobjects"
+			],
+			[
+				"ca",
+				"camera_position_speed"
+			],
+			[
+				"inter",
+				"intersectObjects"
+			],
+			[
+				"game",
+				"gamepadFound"
+			],
+			[
+				"multipl",
+				"multiplyScalar"
+			],
+			[
+				"mainModal",
+				"mainModal_header"
+			],
+			[
+				"ap_ray",
+				"ap_target_ray"
+			],
+			[
+				"combine",
+				"combine_textures"
+			],
+			[
+				"create_thi",
+				"create_thickatmosphere_world"
+			],
+			[
+				"create_",
+				"create_volcanic_space"
+			],
+			[
+				"create_thin",
+				"create_thinatmosphere_space"
+			],
+			[
+				"TERRAINMU",
+				"TERRAINMULT_Z"
+			],
+			[
+				"genera",
+				"generateNIVDataTexture"
+			],
+			[
+				"T",
+				"THREE_texture"
+			],
+			[
+				"Mesh",
+				"MeshLambertMaterial"
+			],
+			[
+				"M_PI",
+				"M_PI_2"
+			],
+			[
+				"TERR",
+				"TERRAIN_HEIGHT"
+			],
+			[
+				"dis",
+				"displayTerrain"
+			],
+			[
+				"crea",
+				"create_craterized_world"
+			],
+			[
+				"for",
+				"for	for (…) {…} (Improved Native For-Loop)"
+			],
+			[
+				"extract",
+				"extract_target_info"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "index.html",
+			"settings":
+			{
+				"buffer_size": 2839,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "js/main.js",
+			"settings":
+			{
+				"buffer_size": 15658,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "map.js",
+			"settings":
+			{
+				"buffer_size": 130990,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"selected_items":
+		[
+			[
+				"",
+				"Indentation: Reindent Lines"
+			]
+		],
+		"width": 416.0
+	},
+	"console":
+	{
+		"height": 0.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/C/xampp/htdocs/pieroads/project.sublime-workspace",
+		"/C/xampp/htdocs/quaternion/index.html",
+		"/C/xampp/htdocs/quaternion/js/main.js",
+		"/C/xampp/htdocs/quaternion/map.js",
+		"/C/Users/joris/reader.py",
+		"/C/xampp/htdocs/devbootstrap/project.sublime-workspace",
+		"/C/xampp/htdocs/nivengine/js/jquery-1.8.1.js",
+		"/C/Users/joris/nivplus/source/NOCTIS-0.CPP",
+		"/C/Users/joris/nice/source/NOCTIS-D.H",
+		"/C/xampp/htdocs/nivengine/niv_drawing.js",
+		"/C/xampp/htdocs/nivengine/niv_starmap.js",
+		"/C/xampp/htdocs/nivengine/testsphere.html",
+		"/C/xampp/htdocs/nivengine/niv_drawingSpace",
+		"/C/Users/joris/nice/source/randalg.cpp",
+		"/C/xampp/htdocs/PhpProject12/terraingen.html",
+		"/C/xampp/htdocs/nivengine/niv_engine.html",
+		"/C/xampp/htdocs/nivengine/niv_engine.js",
+		"/C/Users/joris/Documents/GitHub/three.js/src/extras/ImageUtils.js",
+		"/C/Users/joris/nice/source/NOCTIS-0.H",
+		"/C/Users/joris/nice/source/NOCTIS-2.H",
+		"/C/Users/joris/niv_engine.html",
+		"/C/Users/joris/niv_engine.js",
+		"/C/Users/joris/temp.asm",
+		"/C/xampp/htdocs/nivengine/niv_engine.php",
+		"/C/Users/joris/nivplus/source/NOCTIS.CPP",
+		"/C/Users/joris/nivplus/source/NOCTIS-1.CPP",
+		"/C/Users/joris/nivplus/source/NOCTIS-0.H",
+		"/C/xampp/htdocs/PhpProject8/mygame.js"
+	],
+	"find":
+	{
+		"height": 42.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"0.25",
+			"mapdata",
+			"phy",
+			"newwall",
+			"console.log",
+			"MSPEED",
+			"objspd",
+			"binary",
+			"RANDTEST=",
+			"fprintf(std",
+			"printf(stderr",
+			"RAND_MAX",
+			"NEARSTAR",
+			"SRAND",
+			"zrandom",
+			"prepare_nears",
+			"printf",
+			"prepare_",
+			"}\n",
+			"new",
+			"google",
+			"long",
+			"debug_trace",
+			"case 3:",
+			"ssmooth(",
+			"target",
+			";",
+			"ssmooth",
+			"lssmooth",
+			"case 3:",
+			"QUADWORDS =",
+			"QUadwords",
+			"ssmooth",
+			"debug_tra",
+			"render",
+			"CREATEFILE",
+			"trace",
+			"snapfilename",
+			"debug",
+			"write",
+			"show",
+			"showst",
+			"map",
+			"fopen",
+			"dump",
+			"starmap",
+			"dump",
+			"lssmooth",
+			"case 3:",
+			"objectscha",
+			"objectschart",
+			"combine_text",
+			"orb_seed[n]",
+			"seedval",
+			"surface(",
+			"orb_seed",
+			"seed",
+			"palette",
+			"random",
+			"Math.",
+			"seg",
+			"flat_r",
+			"seed",
+			"renderPlanetTe",
+			"displaySp",
+			"fast_random",
+			"mask",
+			"seed",
+			"DWord",
+			"fast_rand",
+			"crater",
+			"segvar",
+			"SEGVAR",
+			"case 3:",
+			"psmooth",
+			"overlay",
+			"psmooth",
+			"knot1",
+			"{\n",
+			"band",
+			"negate",
+			"band",
+			"wave",
+			"objectschart",
+			"objectscha",
+			"atmosphere",
+			"objectschart",
+			"generateNIV",
+			"objectsch",
+			"crater",
+			"std_cra",
+			"std_",
+			"std_crater",
+			"crater",
+			"pclear",
+			"large",
+			"todo",
+			"atm_cycl",
+			"fast_random",
+			"colorbase",
+			"shade (tmppal",
+			"shade(tmppal, co",
+			"tmppal",
+			"planet_rgb_and_var",
+			"case 7:",
+			"adapted",
+			"showpalette",
+			"palette",
+			"line",
+			"fracture",
+			" a",
+			"band",
+			"p_back",
+			"band",
+			"fast_random",
+			"fast_rando",
+			"fast_random",
+			"surface",
+			"space",
+			"planet_types",
+			"key_radi",
+			"planet_orb_sca",
+			"p_orb_ray",
+			"class",
+			"lave",
+			"crater",
+			"lssmooth",
+			"mare"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"ROTSPEED",
+			"camera_rotation_speed",
+			"",
+			"(target",
+			" & 0xFC >> 2);",
+			"s_class",
+			"",
+			"[];",
+			"var ",
+			"parseInt",
+			"var "
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "index.html",
+					"settings":
+					{
+						"buffer_size": 2839,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								608,
+								608
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 1,
+					"file": "js/main.js",
+					"settings":
+					{
+						"buffer_size": 15658,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								10434,
+								10434
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 5175.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "map.js",
+					"settings":
+					{
+						"buffer_size": 130990,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								142,
+								142
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			0.382208508403,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"replace":
+	{
+		"height": 62.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 150.0,
+	"status_bar_visible": true
+}
