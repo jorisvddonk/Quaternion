@@ -68,14 +68,22 @@ function newwall(mapdata, vertarray, geom, x, y, z) {
   }
 
   if (vertarray.length == 4) {
-    var face = new THREE.Face4(0, 1, 2, 3);
+    // emulate using 2 face3
+    var face1 = new THREE.Face3(0, 1, 2);
+    geom.faces.push(face1);
+    face1._vertices = geom.vertices;
+    faces.push(face1);
+    var face2 = new THREE.Face3(0, 2, 3);
+    geom.faces.push(face2);
+    face2._vertices = geom.vertices;
+    faces.push(face2);
   }
   if (vertarray.length == 3) {
     var face = new THREE.Face3(0, 1, 2);
+    geom.faces.push(face);
+    face._vertices = geom.vertices;
+    faces.push(face);
   }
-  geom.faces.push(face);
-  face._vertices = geom.vertices;
-  faces.push(face);
   geom.computeFaceNormals();
   var geommesh = new THREE.Mesh(geom, geommat);
   geommesh.position = new THREE.Vector3(
@@ -453,12 +461,9 @@ function onDocumentMouseDown(event) {
   );
   projector.unprojectVector(vector, camera);
 
-  var ray = new THREE.Ray(
-    camera.position,
-    vector.sub(camera.position).normalize()
-  );
-
-  var intersects = ray.intersectObjects(colobjects);
+  var raycaster = new THREE.Raycaster();
+  raycaster.set(camera.position, vector.sub(camera.position).normalize());
+  var intersects = raycaster.intersectObjects(colobjects);
 
   if (intersects.length > 0) {
     console.log('WOO INTERSECT');
