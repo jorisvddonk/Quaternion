@@ -18,9 +18,6 @@ var keyboard = {
     KeyS: false,
     KeyA: false,
     KeyD: false
-  },
-  pressed: function(keyname) {
-    return this.state[keyname];
   }
 };
 
@@ -180,8 +177,6 @@ function createGeom() {
   return geom;
 }
 
-var FOO = 0;
-
 var addLight = function(elem, light) {
   var el = document.createElement('a-entity');
   el.setAttribute(
@@ -218,8 +213,8 @@ AFRAME.registerComponent('descent-controls', {
     var ROTSPEED = 0.003;
     var MOVSPEED = 0.04;
 
-    if (navigator.getGamepads()[0] !== undefined) {
-      if (gamepadFound == false) {
+    if (gamepadFound == false) {
+      if (navigator.getGamepads()[0] !== undefined) {
         gamepadFound = true;
         gamepad = navigator.getGamepads()[0];
         if (gamepad === null) {
@@ -257,47 +252,47 @@ AFRAME.registerComponent('descent-controls', {
       camera_position_speed = camera_position_speed.add(TEMPVEC3);
     }
 
-    if (keyboard.pressed('ArrowDown')) {
+    if (keyboard.state['ArrowDown']) {
       TEMPVEC3.set(ROTSPEED, 0, 0);
       camera_rotation_speed = camera_rotation_speed.add(TEMPVEC3);
     }
-    if (keyboard.pressed('ArrowUp')) {
+    if (keyboard.state['ArrowUp']) {
       TEMPVEC3.set(-ROTSPEED, 0, 0);
       camera_rotation_speed = camera_rotation_speed.add(TEMPVEC3);
     }
-    if (keyboard.pressed('KeyE')) {
+    if (keyboard.state['KeyE']) {
       TEMPVEC3.set(0, 0, -ROTSPEED);
       camera_rotation_speed = camera_rotation_speed.add(TEMPVEC3);
     }
-    if (keyboard.pressed('KeyQ')) {
+    if (keyboard.state['KeyQ']) {
       TEMPVEC3.set(0, 0, ROTSPEED);
       camera_rotation_speed = camera_rotation_speed.add(TEMPVEC3);
     }
-    if (keyboard.pressed('ArrowRight')) {
+    if (keyboard.state['ArrowRight']) {
       TEMPVEC3.set(0, -ROTSPEED, 0);
       camera_rotation_speed = camera_rotation_speed.add(TEMPVEC3);
     }
-    if (keyboard.pressed('ArrowLeft')) {
+    if (keyboard.state['ArrowLeft']) {
       TEMPVEC3.set(0, ROTSPEED, 0);
       camera_rotation_speed = camera_rotation_speed.add(TEMPVEC3);
     }
 
-    if (keyboard.pressed('KeyW')) {
+    if (keyboard.state['KeyW']) {
       TEMPVEC3.set(0, 0, -MOVSPEED);
       TEMPVEC3.applyQuaternion(shipElement.quaternion);
       camera_position_speed = camera_position_speed.add(TEMPVEC3);
     }
-    if (keyboard.pressed('KeyS')) {
+    if (keyboard.state['KeyS']) {
       TEMPVEC3.set(0, 0, MOVSPEED);
       TEMPVEC3.applyQuaternion(shipElement.quaternion);
       camera_position_speed = camera_position_speed.add(TEMPVEC3);
     }
-    if (keyboard.pressed('KeyA')) {
+    if (keyboard.state['KeyA']) {
       TEMPVEC3.set(-MOVSPEED, 0, 0);
       TEMPVEC3.applyQuaternion(shipElement.quaternion);
       camera_position_speed = camera_position_speed.add(TEMPVEC3);
     }
-    if (keyboard.pressed('KeyD')) {
+    if (keyboard.state['KeyD']) {
       TEMPVEC3.set(MOVSPEED, 0, 0);
       TEMPVEC3.applyQuaternion(shipElement.quaternion);
       camera_position_speed = camera_position_speed.add(TEMPVEC3);
@@ -307,12 +302,10 @@ AFRAME.registerComponent('descent-controls', {
     camera_position_speed.multiplyScalar(0.8);
     camera_rotation_speed.multiplyScalar(0.9);
 
-    var rotationVector = camera_rotation_speed;
-    var rotMult = 1;
     TEMPQUAT.set(
-      rotationVector.x * rotMult,
-      rotationVector.y * rotMult,
-      rotationVector.z * rotMult,
+      camera_rotation_speed.x,
+      camera_rotation_speed.y,
+      camera_rotation_speed.z,
       1
     ).normalize();
     quat.multiply(TEMPQUAT);
@@ -344,9 +337,6 @@ AFRAME.registerComponent('descent-controls', {
             face._tri.normal(TEMPVEC3);
             TEMPVEC3.multiplyScalar(SHIPSIZE - dist);
             shipElement.position.add(TEMPVEC3);
-          }
-          if (FOO < 10) {
-            FOO++;
           }
         }
       }
