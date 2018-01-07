@@ -1,5 +1,4 @@
 var THREE = require('three');
-var jQuery = require('exports-loader?jQuery!../libs/jquery-1.8.1.min.js');
 var THREEx = require('exports-loader?THREEx!../libs/THREEx.KeyboardState.js');
 var mapdata = require('exports-loader?mapdata!../map.js');
 
@@ -88,8 +87,7 @@ function init(shipmodel, levelgeom) {
     FAR = 10000;
 
   // get the DOM element to attach to
-  // - assume we've got jQuery to hand
-  var $container = $('#content');
+  var $container = document.getElementById('content');
 
   // create a WebGL renderer, camera
   // and a scene
@@ -109,7 +107,7 @@ function init(shipmodel, levelgeom) {
   renderer.setSize(WIDTH, HEIGHT);
 
   // attach the render-supplied DOM element
-  $container.append(renderer.domElement);
+  $container.appendChild(renderer.domElement);
 
   // create a new mesh with
   // sphere geometry - we will cover
@@ -424,7 +422,7 @@ function animate() {
   render();
 }
 
-$(function() {
+document.addEventListener('DOMContentLoaded', function() {
   var jsl = new THREE.JSONLoader();
   jsl.load(
     'data/XWingLow-MediumPolyByPixelOzMultiMaterialColoredVer1-0.js',
