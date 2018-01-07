@@ -225,7 +225,7 @@ AFRAME.registerComponent('descent-controls', {
 
     if (gamepad !== undefined) {
       //Rotation:
-      if (!gamepad.buttons[11].pressed) {
+      if (!(gamepad.buttons[11] && gamepad.buttons[11].pressed)) {
         //Normal turning
         TEMPVEC3.set(
           ROTSPEED * gamepad_deadzone(gamepad.axes[3]),
