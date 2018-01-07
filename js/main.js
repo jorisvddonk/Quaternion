@@ -299,7 +299,7 @@ function render() {
         ROTSPEED * -gamepad_deadzone(gamepad.axes[2])
       );
     }
-    camera_rotation_speed = camera_rotation_speed.addSelf(nv);
+    camera_rotation_speed = camera_rotation_speed.add(nv);
 
     //Position:
     var temp = new THREE.Vector3(
@@ -307,54 +307,55 @@ function render() {
       0,
       MOVSPEED * gamepad_deadzone(gamepad.axes[1])
     );
-    camera.quaternion.multiplyVector3(temp);
-    camera_position_speed = camera_position_speed.addSelf(temp);
+    temp.applyQuaternion(camera.quaternion);
+    //camera.quaternion.multiplyVector3(temp);
+    camera_position_speed = camera_position_speed.add(temp);
   }
 
   if (keyboard.pressed('down')) {
     var nv = new THREE.Vector3(ROTSPEED, 0, 0);
-    camera_rotation_speed = camera_rotation_speed.addSelf(nv);
+    camera_rotation_speed = camera_rotation_speed.add(nv);
   }
   if (keyboard.pressed('up')) {
     var nv = new THREE.Vector3(-ROTSPEED, 0, 0);
-    camera_rotation_speed = camera_rotation_speed.addSelf(nv);
+    camera_rotation_speed = camera_rotation_speed.add(nv);
   }
   if (keyboard.pressed('E')) {
     var nv = new THREE.Vector3(0, 0, -ROTSPEED);
-    camera_rotation_speed = camera_rotation_speed.addSelf(nv);
+    camera_rotation_speed = camera_rotation_speed.add(nv);
   }
   if (keyboard.pressed('Q')) {
     var nv = new THREE.Vector3(0, 0, ROTSPEED);
-    camera_rotation_speed = camera_rotation_speed.addSelf(nv);
+    camera_rotation_speed = camera_rotation_speed.add(nv);
   }
   if (keyboard.pressed('right')) {
     var nv = new THREE.Vector3(0, -ROTSPEED, 0);
-    camera_rotation_speed = camera_rotation_speed.addSelf(nv);
+    camera_rotation_speed = camera_rotation_speed.add(nv);
   }
   if (keyboard.pressed('left')) {
     var nv = new THREE.Vector3(0, ROTSPEED, 0);
-    camera_rotation_speed = camera_rotation_speed.addSelf(nv);
+    camera_rotation_speed = camera_rotation_speed.add(nv);
   }
 
   if (keyboard.pressed('w')) {
     var temp = new THREE.Vector3(0, 0, -MOVSPEED);
     camera.quaternion.multiplyVector3(temp);
-    camera_position_speed = camera_position_speed.addSelf(temp);
+    camera_position_speed = camera_position_speed.add(temp);
   }
   if (keyboard.pressed('s')) {
     var temp = new THREE.Vector3(0, 0, MOVSPEED);
     camera.quaternion.multiplyVector3(temp);
-    camera_position_speed = camera_position_speed.addSelf(temp);
+    camera_position_speed = camera_position_speed.add(temp);
   }
   if (keyboard.pressed('a')) {
     var temp = new THREE.Vector3(-MOVSPEED, 0, 0);
     camera.quaternion.multiplyVector3(temp);
-    camera_position_speed = camera_position_speed.addSelf(temp);
+    camera_position_speed = camera_position_speed.add(temp);
   }
   if (keyboard.pressed('d')) {
     var temp = new THREE.Vector3(MOVSPEED, 0, 0);
     camera.quaternion.multiplyVector3(temp);
-    camera_position_speed = camera_position_speed.addSelf(temp);
+    camera_position_speed = camera_position_speed.add(temp);
   }
 
   camera_position_speed.multiplyScalar(0.8);
@@ -371,15 +372,17 @@ function render() {
       1
     )
     .normalize();
-  quat.multiplySelf(tmpQuaternion);
+  quat.multiply(tmpQuaternion);
 
   //Do the actual movement/rotation
   camera.quaternion = quat;
-  camera.position = camera.position.addSelf(camera_position_speed);
+  camera.position = camera.position.add(camera_position_speed);
 
   //Check for collisions
   var maxIntersect = null;
-  var ray = new THREE.Ray(undefined, undefined, 0, SHIPSIZE);
+  var raycaster = new THREE.Raycaster();
+  raycaster.near = 0;
+  raycaster.far = SHIPSIZE;
   for (var vi = 0.1; vi < Math.PI; vi += Math.PI * 0.1) {
     for (var pi = 0; pi < Math.PI * 2; pi += Math.PI * 0.1) {
       pX = Math.sin(pi) * (Math.sin(vi) * SHIPSIZE);
@@ -388,8 +391,8 @@ function render() {
 
       var rvect = new THREE.Vector3(pX, pY, pZ);
 
-      var intersects = ray.intersectObjects(colobjects);
-      ray.set(camera.position, rvect.normalize());
+      raycaster.set(camera.position, rvect.normalize());
+      var intersects = raycaster.intersectObjects(colobjects);
       if (intersects.length > 0) {
         for (var ii = 0; ii < intersects.length; ii++) {
           if (
@@ -407,9 +410,9 @@ function render() {
 
   if (maxIntersect != null && maxIntersect.distance > 0) {
     var camvec = new THREE.Vector3();
-    camvec = camvec.sub(camera.position, maxIntersect.point);
+    camvec = camvec.subVectors(camera.position, maxIntersect.point);
     camvec = camvec.multiplyScalar(maxIntersect.distance / SHIPSIZE + 0.1);
-    camera.position = camera.position.addSelf(camvec);
+    camera.position = camera.position.add(camvec);
   }
 
   /*var cvect = new THREE.Vector3();
@@ -452,7 +455,7 @@ function onDocumentMouseDown(event) {
 
   var ray = new THREE.Ray(
     camera.position,
-    vector.subSelf(camera.position).normalize()
+    vector.sub(camera.position).normalize()
   );
 
   var intersects = ray.intersectObjects(colobjects);
@@ -542,7 +545,7 @@ THREE.Ray.prototype.intersectFaces = function(faces) {
 
     vector = objMatrix
       .multiplyVector3(vector.copy(face.centroid))
-      .subSelf(originCopy);
+      .sub(originCopy);
     //normal = object.matrixRotationWorld.multiplyVector3( normal.copy( face.normal ) );
     normal = normal.copy(face.normal);
     dot = directionCopy.dot(normal);
