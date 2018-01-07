@@ -1,4 +1,4 @@
-var THREE = require('exports-loader?THREE!../libs/three.js');
+var THREE = require('three');
 var jQuery = require('exports-loader?jQuery!../libs/jquery-1.8.1.min.js');
 var THREEx = require('exports-loader?THREEx!../libs/THREEx.KeyboardState.js');
 var noty = require('exports-loader?noty!../libs/noty/jquery.noty.js');
@@ -86,11 +86,7 @@ function newwall(mapdata, vertarray, geom, x, y, z) {
   }
   geom.computeFaceNormals();
   var geommesh = new THREE.Mesh(geom, geommat);
-  geommesh.position = new THREE.Vector3(
-    x * VERTMULT,
-    y * VERTMULT,
-    z * VERTMULT
-  );
+  geommesh.position.set(x * VERTMULT, y * VERTMULT, z * VERTMULT);
   scene.add(geommesh);
   colobjects.push(geommesh);
   console.log(geommesh);
@@ -151,7 +147,6 @@ function init(shipmodel, levelgeom) {
   /*ship = new THREE.Object3D();
 	ship.add(obj);
 	ship.scale.set(50,50,50);
-	ship.useQuaternion = true;
 	scene.add(ship);*/
 
   projector = new THREE.Projector();
@@ -216,8 +211,6 @@ function init(shipmodel, levelgeom) {
   pointLight.position = camera.position.clone();
   scene.add(pointLight);
 
-  camera.useQuaternion = true;
-
   quat = new THREE.Quaternion();
   //quat.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), Math.PI / 2 );
 
@@ -237,7 +230,7 @@ function init(shipmodel, levelgeom) {
 
   // create the particle variables
   var particles = new THREE.Geometry(),
-    pMaterial = new THREE.ParticleBasicMaterial({
+    pMaterial = new THREE.PointCloudMaterial({
       color: 0xffffff,
       size: 20
     });
@@ -255,7 +248,7 @@ function init(shipmodel, levelgeom) {
   }
 
   // create the particle variables
-  var pMaterial = new THREE.ParticleBasicMaterial({
+  var pMaterial = new THREE.PointCloudMaterial({
     color: 0xffffff,
     size: 20,
     map: THREE.ImageUtils.loadTexture('img/particle.png'),
@@ -264,7 +257,7 @@ function init(shipmodel, levelgeom) {
   });
 
   // create the particle system
-  var particleSystem = new THREE.ParticleSystem(particles, pMaterial);
+  var particleSystem = new THREE.PointCloud(particles, pMaterial);
 
   // also update the particle system to
   // sort the particles which enables
