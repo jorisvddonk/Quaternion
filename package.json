@@ -25,9 +25,9 @@
     "husky": "^0.14.3",
     "lint-staged": "^6.0.0",
     "prettier": "^1.9.2",
+    "uglifyjs-webpack-plugin": "^1.1.6",
     "webpack": "^3.10.0",
-    "webpack-dev-server": "^2.10.0",
-    "webpack-livereload-plugin": "^1.0.0"
+    "webpack-dev-server": "^2.10.0"
   },
   "dependencies": {
     "aframe": "^0.7.1",
