@@ -12,7 +12,7 @@ if (
   process.env.NODE_ENV === 'production' ||
   process.env.npm_lifecycle_event === 'webpack'
 ) {
-  plugins.push(new UglifyJsPlugin({}));
+  plugins.unshift(new UglifyJsPlugin({}));
 }
 module.exports = {
   entry: './js/main.js',
