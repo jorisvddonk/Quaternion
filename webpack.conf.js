@@ -8,7 +8,10 @@ var plugins = [
     inject: 'head'
   })
 ];
-if (process.env.NODE_ENV === 'production') {
+if (
+  process.env.NODE_ENV === 'production' ||
+  process.env.npm_lifecycle_event === 'webpack'
+) {
   plugins.push(new UglifyJsPlugin({}));
 }
 module.exports = {
