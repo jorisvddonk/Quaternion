@@ -1,14 +1,7 @@
-To develop:
+Quaternion, a work-in progress six degrees of freedom game.
 
-`npm run-script dev`
-then visit http://localhost:8080/
+http://quaternion.sarvva.moos.es/
 
-To build:
+## Developing
 
-`npm run-script webpack`
-
-To release:
-
-`git push dokku`
-
-Released builds are automatically made available at http://quaternion.sarvva.moos.es/
+Simply run `npm run-script dev`, then visit http://localhost:8080/
