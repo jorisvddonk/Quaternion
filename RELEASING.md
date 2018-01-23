@@ -2,7 +2,7 @@
 
 First of all, make a production build:
 
-`npm run-script webpack`
+`npm run-script build`
 
 Then commit the bundle.js
 

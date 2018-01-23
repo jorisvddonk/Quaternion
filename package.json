@@ -8,8 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "webpack": "webpack --config webpack.conf.js",
-    "dev": "webpack-dev-server --config webpack.conf.js",
+    "build": "parcel build index.html --out-dir dist --public-url ./ && mv dist/quaternion.html dist/index.html",
+    "dev": "parcel index.html --out-dir .temp",
     "precommit": "lint-staged",
     "prettier": "prettier --write --config .prettierrc js/**/*.js"
   },
@@ -23,13 +23,10 @@
   },
   "devDependencies": {
     "file-loader": "^1.1.6",
-    "html-webpack-plugin": "^2.30.1",
     "husky": "^0.14.3",
     "lint-staged": "^6.0.0",
-    "prettier": "^1.9.2",
-    "uglifyjs-webpack-plugin": "^1.1.6",
-    "webpack": "^3.10.0",
-    "webpack-dev-server": "^2.10.0"
+    "parcel-bundler": "^1.5.0",
+    "prettier": "^1.9.2"
   },
   "dependencies": {
     "aframe": "^0.7.1",
