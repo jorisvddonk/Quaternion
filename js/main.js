@@ -1,7 +1,8 @@
 var AFRAME = require('aframe');
 var THREE = AFRAME.THREE;
-var mapdata = require('exports-loader?mapdata!../map.js');
-var lights = require('exports-loader?lights!../map.js');
+var map = require('../map.js');
+var mapdata = map.mapdata;
+var lights = map.lights;
 
 var quat, level, ship;
 var camera_rotation_speed = new THREE.Vector3(0, 0, 0);

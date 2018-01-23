@@ -14938,3 +14938,8 @@ var lights = [
     distance: 20
   }
 ];
+
+module.exports = {
+  lights: lights,
+  mapdata: mapdata
+};
