@@ -11,8 +11,9 @@
     "test": "tests"
   },
   "scripts": {
+    "start": "npm run-script build",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "parcel build index.html --out-dir dist --public-url ./ && mv dist/quaternion.html dist/index.html",
+    "build": "PARCEL_WORKERS=0 parcel build index.html --out-dir dist --public-url ./ && mv dist/quaternion.html dist/index.html",
     "dev": "parcel index.html --out-dir .temp",
     "precommit": "lint-staged",
     "prettier": "prettier --write --config .prettierrc js/**/*.js"
