@@ -11,7 +11,6 @@
     "test": "tests"
   },
   "scripts": {
-    "start": "npm run-script build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "PARCEL_WORKERS=0 parcel build index.html --out-dir dist --public-url ./ && mv dist/quaternion.html dist/index.html",
     "dev": "parcel index.html --out-dir .temp",

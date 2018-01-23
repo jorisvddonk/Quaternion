@@ -1,13 +1,7 @@
 # Releasing a new build of Quaternion
 
-First of all, make a production build:
-
-`npm run-script build`
-
-Then commit the bundle.js
-
-Finally, push to dokku:
+Quaternion can be released automatically on dokku-compatible hosts. Quaternion will be built within the docker container as part of Dokku's predeployment step. To do this, simply run:
 
 `git push dokku`
 
-The released build is then automatically made available at http://quaternion.sarvva.moos.es/
+(this assumes that you have a suitable dokku remote configured)
