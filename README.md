@@ -1,6 +1,6 @@
 Quaternion, a work-in progress six degrees of freedom game.
 
-http://quaternion.sarvva.moos.es/
+https://jorisvddonk.github.io/Quaternion/
 
 ## Developing
 
